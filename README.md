@@ -36,7 +36,7 @@ Each miner is able to carry 400 wallets on a single RTX 4090 card. Should expect
 export CUDA_VISIBLE_DEVICES=<GPU_INDEX>
 
 cargo run --release -- \
-    --rpc-url <RPC_URL> \
+    --rpc <RPC_URL> \
     --priority-fee 500000 \                     # Tip used for Jito bundle. If max adaptive tip is set, this will be the initial tip.
     bundle-mine-gpu \
     --key-folder <FOLDER_CONTAINS_YOUR_KEYS> \  # Folder contains your Solana keys
@@ -47,7 +47,7 @@ cargo run --release -- \
 #### Multi Claim
 ```
 cargo run --release -- \
-    --rpc-url <RPC_URL> \
+    --rpc <RPC_URL> \
     --priority-fee 500000 \                     # Tip used for Jito bundle. 
     claim \
     --key-folder <FOLDER_CONTAINS_YOUR_KEYS> \  # Folder contains your Solana keys
@@ -57,7 +57,7 @@ cargo run --release -- \
 #### Register
 ```
 cargo run --release -- \
-    --rpc-url <RPC_URL> \
+    --rpc <RPC_URL> \
     --priority-fee 500000 \                     # Tip used for Jito bundle. 
     register \
     --key-folder <FOLDER_CONTAINS_YOUR_KEYS> \  # Folder contains your Solana keys
