@@ -1,6 +1,6 @@
 # $ORE Miner
 
-ORE Miner built on top of Jito bundle service by [@tonyke_bot](https://x.com/tonyke_bot).
+ORE Miner built on top of Jito bundle service by [@tonyke_bot](https://x.com/tonyke_bot) and [@shoucccc](https://twitter.com/shoucccc).
 
 Shipped with both CPU and GPU hashing support.
 
