@@ -20,7 +20,7 @@ where
     T: de::DeserializeOwned,
 {
     let response = reqwest::Client::new()
-        .post("https://ny.block-engine.jito.wtf/api/v1/bundles")
+        .post("https://ny.mainnet.block-engine.jito.wtf/api/v1/bundles")
         .header("Content-Type", "application/json")
         .json(&json!({"jsonrpc": "2.0", "id": 1, "method": method, "params": params}))
         .send()
