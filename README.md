@@ -1,14 +1,15 @@
 # $ORE Miner
 
-ORE Miner built on top of Jito bundle service. Shipped with both CPU and GPU hashing support.
+ORE Miner built on top of Jito bundle service by [@tonyke_bot](https://x.com/tonyke_bot).
+
+Shipped with both CPU and GPU hashing support.
 
 Each miner is able to carry 400 wallets on a single RTX 4090 card. Should expect 10~20% improvement if the code is optimized. 
 
-## Preparation
+## Preparations
 
 1. Get a reliable, fastest Solana RPC
-
-2. Clone the the repo and build
+2. Clone the repo and build
     ```shell
     git clone https://github.com/tonyke-bot/ore-miner.git
     cd ore-miner
@@ -20,7 +21,13 @@ Each miner is able to carry 400 wallets on a single RTX 4090 card. Should expect
     ```shell
     ./build-cuda-miner.sh
     ```
+   
+5. Generate wallets and fund them with SOL
 
+### Feature
+* Evenly consumed SOL: Choose richest wallet to tip bundle and richest wallet in a transaction to pay the transaction fee.
+* Adaptive tip: Automatically adjust tip based on the Jito tip stream.
+* Bulk operation support: mine, register, claim, batch transfer
 
 ## Usage
 
@@ -56,3 +63,9 @@ cargo run --release -- \
     --key-folder <FOLDER_CONTAINS_YOUR_KEYS> \  # Folder contains your Solana keys
 ```
 
+### Buy me ☕️
+
+* SOL: `tonyi4UznxNzae5RBinHTU8Gxr91RRGBcdx7mmimN8F`
+* EVM: `0x45Fce32abB76fd0722882326FBf2d1182e6b982B`
+
+Appreciate your support!
