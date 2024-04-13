@@ -1,0 +1,1 @@
+nvcc -o target/release/nonce-worker-gpu ore.cu
