@@ -19,7 +19,7 @@ Each miner is able to carry 400 wallets on a single RTX 4090 card. Should expect
 3. (Optional) Install CUDA development environment
 4. (Optional) Build CUDA miner
     ```shell
-    ./build-cuda-miner.sh
+    ./build-cuda-worker.sh
     ```
    
 5. Generate wallets and fund them with SOL

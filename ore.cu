@@ -13,9 +13,6 @@ int number_threads;
 int max_threads_per_mp;
 
 int num_messages;
-const int digest_size = 256;
-const int digest_size_bytes = digest_size / 8;
-const size_t str_length = 7;	//change for different sizes
 
 cudaEvent_t start, stop;
 
@@ -152,7 +149,6 @@ __device__ void generate_message(uint8_t *message, uint64_t tid)
 
 __global__ void brute_force_single(uint8_t *d_diff, uint8_t *d_preimage, int *done, uint64_t starting_tid)
 {
-	int str_len;
 	const int output_len = 32;
 	int tid = threadIdx.x + (blockIdx.x * blockDim.x);
 	unsigned char output[output_len];
@@ -175,16 +171,14 @@ __global__ void brute_force_single(uint8_t *d_diff, uint8_t *d_preimage, int *do
 
 }
 
-/**
- * Initializes the global variables by calling the cudaGetDeviceProperties().
- */
 void gpu_init()
 {
     cudaDeviceProp device_prop;
-    int device_count, block_size;
+    int block_size;
 
-    if (cudaGetDeviceProperties(&device_prop, 0) != cudaSuccess) {
-        printf("Problem getting properties for device, exiting...\n");
+	cudaError_t cudaerr = cudaGetDeviceProperties(&device_prop, 0);
+    if (cudaerr != cudaSuccess) {
+		printf("getting properties for device failed with error \"%s\".\n", cudaGetErrorString(cudaerr));
         exit(EXIT_FAILURE);
     }
 
@@ -201,53 +195,14 @@ int gcd(int a, int b) {
     return (a == 0) ? b : gcd(b % a, a);
 }
 
-/*
- * Opens a file name and reads all the Strings into an array of Strings.
- */
-char *read_in_messages(char *file_name)
-{
-	FILE *f;
-	if(!(f = fopen(file_name, "r")))
-    {
-        printf("Error opening file %s", file_name);
-        exit(1);
-    }
-
-	char *messages = (char *) malloc(sizeof(char) * num_messages * str_length);
-	if (messages == NULL)
-	{
-	    perror("Error allocating memory for list of Strings.\n");
-        exit(1);
-	}
-
-	int index = 0;
-	char buf[10];
-	while(1)
-	{
-		if (fgets(buf, str_length + 1, f) == NULL)
-		    break;
-		buf[strlen(buf) - 1] = '\0';
-		memcpy(&messages[index], buf, str_length);
-		index += str_length - 1;
-	}
-
-	return messages;
-}
-
 void find_message()
 {
-	float h_to_d_time = 0.0;
-	float comp_time = 0.0;
-	float d_to_h_time = 0.0;
-	float total_time = 0.0;
-	size_t max_str_size = 11 * sizeof(char);
-	size_t digest_str_size = digest_size_bytes * sizeof(unsigned char);
-
     uint8_t* data = (uint8_t*)malloc(33 * sizeof(uint8_t));
     // read 33 bytes from stdin
+	// first byte is reserved for compatibility with the CPU worker
+	// rest are the difficulty
     fread(data, 1, 33, stdin);
     uint8_t* diff = data + 1;
-
 
 	uint64_t starting_tid = 0;
 
@@ -260,6 +215,7 @@ void find_message()
 	cudaMalloc((void**) &d_preimage, 64);
 	cudaMemcpy(d_diff, diff, 32, cudaMemcpyHostToDevice);
 
+	// keep reading proof.hash and pubkey, in total 64 bytes
     while (1) {
         int h_done[1] = {0};
 	    cudaMemcpy(d_done, h_done, sizeof(int), cudaMemcpyHostToDevice);
@@ -290,9 +246,6 @@ void find_message()
     }
 }
 
-/**
- * Main method, initializes the global variables, calls the kernels, and prints the results.
- */
 int main(int argc, char **argv)
 {
     gpu_init();
