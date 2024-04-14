@@ -423,7 +423,7 @@ impl SendBundleTask {
                         tx_signers.push(signer);
 
                         if tipper == signer.pubkey() {
-                            ixs.push(jito::build_bribe_ix(&tipper, self.tip));
+                            ixs.push(jito::build_bribe_ix(&tipper, tip));
                         }
                     }
 
