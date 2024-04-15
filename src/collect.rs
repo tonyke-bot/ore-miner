@@ -68,8 +68,6 @@ impl Miner {
             if instructions.len() >= 8 {
                 signers.push(&fee_payer_account);
                 
-                
-                
                 let recent_blockhash = client
                 .get_latest_blockhash()
                 .await
