@@ -2,7 +2,8 @@
 use clap::Parser;
 use solana_sdk::{
     pubkey::Pubkey, signature::{Keypair, Signer},
-    signer::EncodableKey, system_instruction, transaction::Transaction
+    signer::EncodableKey, system_instruction, transaction::Transaction,
+    message::Message
 };
 
 use crate::Miner;
@@ -24,9 +25,16 @@ impl Miner {
         let client = Miner::get_client_confirmed(&self.rpc);
         let accounts = Self::read_keys(&args.keypair);
         let fee_payer_account =  Keypair::read_from_file(&args.fee_payer).unwrap();
-
+        
         let mut instructions = Vec::new();
         let mut signers = Vec::new();
+
+        let balance_fee_payer = client
+            .get_balance(&fee_payer_account.pubkey())
+            .await
+            .expect("Failed to get balance");
+
+        println!("Fee payer balance: {}", balance_fee_payer);
 
         for keypair in accounts.iter() {
             let pubkey = keypair.pubkey();
@@ -52,7 +60,8 @@ impl Miner {
 
             if instructions.len() >= 8 {
                 signers.push(&fee_payer_account);
-
+                
+                
                 
                 let recent_blockhash = client
                 .get_latest_blockhash()
@@ -65,6 +74,16 @@ impl Miner {
                     &signers,
                     recent_blockhash,
                 );
+                
+                let message = Message::new(&instructions, Some(&fee_payer_account.pubkey()));
+                let estimate_transfer_fee = client.get_fee_for_message(&message).await.expect("Failed to get fee for message");
+
+                if estimate_transfer_fee > balance_fee_payer {
+                    eprintln!("Insufficient funds to pay for transaction fee");
+                    return;
+                }
+
+                println!("Estimate transfer fee: {}", estimate_transfer_fee);
 
                 match client.send_and_confirm_transaction(&transaction).await {
                     Ok(signature) => {
