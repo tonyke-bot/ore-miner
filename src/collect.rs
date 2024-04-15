@@ -62,7 +62,7 @@ impl Miner {
                 );
                 instructions.push(instruction);
                 signers.push(keypair);
-                println!("Bundling transfer of {} from {} to {}", balance, pubkey, args.beneficiary)
+                info!("Bundling transfer of {} from {} to {}", balance, pubkey, args.beneficiary)
             }
 
             if instructions.len() >= 8 {
@@ -86,18 +86,18 @@ impl Miner {
                 let estimate_transfer_fee = client.get_fee_for_message(&message).await.expect("Failed to get fee for message");
 
                 if estimate_transfer_fee > balance_fee_payer {
-                    eprintln!("Insufficient funds to pay for transaction fee");
+                    error!("Insufficient funds to pay for transaction fee");
                     return;
                 }
 
-                println!("Estimate transfer fee: {}", estimate_transfer_fee);
+                info!("Estimate transfer fee: {}", estimate_transfer_fee);
 
                 match client.send_and_confirm_transaction(&transaction).await {
                     Ok(signature) => {
-                        println!("Bundled transfer succeeded. Signature: {}", signature);
+                        info!("Bundled transfer succeeded. Signature: {}", signature);
                     }
                     Err(err) => {
-                        eprintln!("Bundled transfer failed: err {}", err);
+                        error!("Bundled transfer failed: err {}", err);
                     }
                 }
 
