@@ -37,6 +37,7 @@ mod batch_transfer;
 mod benchmark_rpc;
 mod bundle_mine;
 mod bundle_mine_gpu;
+mod collect;
 mod claim;
 mod constant;
 mod generate_wallet;
@@ -58,6 +59,7 @@ async fn main() {
         Command::BatchTransfer(args) => miner.batch_transfer(args).await,
         Command::JitoTipStream => miner.jito_tip_stream().await,
         Command::GenerateWallet(args) => miner.generate_wallet(args),
+        Command::Collect(args) => miner.collect(args).await,
     }
 }
 
@@ -83,6 +85,7 @@ pub enum Command {
     JitoTipStream,
     GenerateWallet(crate::generate_wallet::GenerateWalletArgs),
     BatchTransfer(crate::batch_transfer::BatchTransferArgs),
+    Collect(crate::collect::CollectArgs),
 }
 
 impl Miner {
