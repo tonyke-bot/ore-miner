@@ -13,10 +13,10 @@ pub struct CollectArgs {
     #[arg(long, help = "The folder that contains all the keys used to collect the remaining balance.")]
     pub key_folder: String,
 
-    #[arg(long)]
+    #[arg(long, help = "The beneficiary account that will receive the remaining balance.")]
     pub beneficiary: Pubkey,
 
-    #[arg(long, default_value = "")]
+    #[arg(long, default_value = "", help = "The keypair file to use as fee payer. If not provided, the first key in the key_folder will be used.")]
     pub fee_payer: String,
 }
 
