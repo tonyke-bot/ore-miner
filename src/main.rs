@@ -161,7 +161,7 @@ impl Miner {
         hash_and_pubkey: &[(Hash, Pubkey)],
     ) -> (Duration, Vec<(Hash, u64)>) {
         let mining_start = Instant::now();
-        println!("difficulty: {difficulty}", difficulty = difficulty);
+
         let mut child = tokio::process::Command::new(worker)
             .stdin(std::process::Stdio::piped())
             .stdout(std::process::Stdio::piped())
