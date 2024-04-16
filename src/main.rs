@@ -44,6 +44,7 @@ mod generate_wallet;
 mod jito;
 mod register;
 mod utils;
+mod init_claim;
 
 #[tokio::main(flavor = "multi_thread")]
 async fn main() {
@@ -60,6 +61,7 @@ async fn main() {
         Command::JitoTipStream => miner.jito_tip_stream().await,
         Command::GenerateWallet(args) => miner.generate_wallet(args),
         Command::Collect(args) => miner.collect(args).await,
+        Command::InitClaim(args) => miner.init_claim(args).await,
     }
 }
 
@@ -86,6 +88,7 @@ pub enum Command {
     GenerateWallet(crate::generate_wallet::GenerateWalletArgs),
     BatchTransfer(crate::batch_transfer::BatchTransferArgs),
     Collect(crate::collect::CollectArgs),
+    InitClaim(crate::init_claim::InitClaimArgs),
 }
 
 impl Miner {
@@ -158,7 +161,7 @@ impl Miner {
         hash_and_pubkey: &[(Hash, Pubkey)],
     ) -> (Duration, Vec<(Hash, u64)>) {
         let mining_start = Instant::now();
-
+        println!("difficulty: {difficulty}", difficulty = difficulty);
         let mut child = tokio::process::Command::new(worker)
             .stdin(std::process::Stdio::piped())
             .stdout(std::process::Stdio::piped())
